@@ -8,6 +8,17 @@ from __future__ import absolute_import
 import base64, json, ssl, sys, uuid
 import raritan.rpc
 
+import ssl
+from functools import wraps
+def sslwrap(func):
+    @wraps(func)
+    def bar(*args, **kw):
+        kw['ssl_version'] = ssl.PROTOCOL_TLSv1
+        return func(*args, **kw)
+    return bar
+
+ssl.wrap_socket = sslwrap(ssl.wrap_socket)
+
 try:
     # Python 3
     import urllib.request as urllib_request
